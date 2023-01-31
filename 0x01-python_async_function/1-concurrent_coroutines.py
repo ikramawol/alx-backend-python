@@ -1,33 +1,22 @@
 #!/usr/bin/env python3
+""" Takes 2 int args, waits for random delay """
 
-"""
-Module 1-concurrent_coroutines
-"""
 import asyncio
+import random
 from typing import List
+wait_random = __import__('0-basic_async_syntax').wait_random
 
-wait_random = __import__("0-basic_async_syntax").wait_random
 
+async def wait_n(n: int, max_delay: int = 10) -> List[float]:
+    """ Waits for ran delay until max_delay, returns list of actual delays """
+    spawn_list = []
+    delay_list = []
+    for i in range(n):
+        delayed_task = asyncio.create_task(wait_random(max_delay))
+        delayed_task.add_done_callback(lambda x: delay_list.append(x.result()))
+        spawn_list.append(delayed_task)
 
-async def wait_n(n: int, max_delay: int) -> List[float]:
-    """
-    Parameters
-    ----------
-    n : int
-      number of times wait_random function called
-    max_delay : int
-      number of maximum delay
+    for spawn in spawn_list:
+        await spawn
 
-    Returns
-    -------
-    List
-        a list of delays in ascending order
-    """
-    tasks: List = []
-    delays: List[float] = []
-    for _ in range(n):
-        tasks.append(wait_random(max_delay))
-
-    for task in asyncio.as_completed(tasks):
-        delays.append(await task)
-    return delays
+    return delay_list
