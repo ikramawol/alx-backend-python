@@ -1,33 +1,24 @@
 #!/usr/bin/env python3
 
 """
-Module 1-concurrent_coroutines
+Module 0-basic_async_syntax
 """
+import random
 import asyncio
-from typing import List
-
-wait_random = __import__("0-basic_async_syntax").wait_random
 
 
-async def wait_n(n: int, max_delay: int) -> List[float]:
+async def wait_random(max_delay: int = 10) -> float:
     """
     Parameters
-    ----------
-    n : int
-      number of times wait_random function called
+    -----------
     max_delay : int
-      number of maximum delay
+        await time
 
     Returns
     -------
-    List
-        a list of delays in ascending order
+    Float
+        Reterive a random number between 0 and max_dely after some delay
     """
-    tasks: List = []
-    delays: List[float] = []
-    for _ in range(n):
-        tasks.append(wait_random(max_delay))
-
-    for task in asyncio.as_completed(tasks):
-        delays.append(await task)
-    return delays
+    num: float = random.uniform(0, max_delay)
+    await asyncio.sleep(num)
+    return num
